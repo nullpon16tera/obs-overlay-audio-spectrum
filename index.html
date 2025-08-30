@@ -22,23 +22,23 @@
         </div>
         
         <div style="margin-bottom: 10px;">
-            <div style="margin-bottom: 5px; font-weight: bold; font-size: 11px;">音声ソース:</div>
-            <button id="desktop-audio-btn" onclick="switchToDesktopAudio()" style="background: #4CAF50; color: white; border: none; padding: 6px 12px; border-radius: 4px; margin-right: 5px; cursor: pointer; font-size: 11px;" title="仮想音声デバイス(VoiceMeeter/ステレオミックス)または画面共有で音声を取得">
-                🔊 システム音声
-            </button>
-            <button id="microphone-btn" onclick="switchToMicrophone()" style="background: #2196F3; color: white; border: none; padding: 6px 12px; border-radius: 4px; margin-right: 5px; cursor: pointer; font-size: 11px;">
-                🎤 マイク
-            </button>
-            <button id="demo-btn" onclick="switchToDemo()" style="background: #FF9800; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 11px;">
+            <div style="margin-bottom: 5px; font-weight: bold; font-size: 11px;">その他の音声ソース:</div>
+            <button id="demo-btn" onclick="switchToDemo()" style="background: #FF9800; color: white; border: none; padding: 6px 12px; border-radius: 4px; margin-right: 5px; cursor: pointer; font-size: 11px;">
                 ✨ デモ
+            </button>
+            <button id="microphone-btn" onclick="switchToMicrophone()" style="background: #2196F3; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 11px;">
+                🎤 マイク (緊急用)
             </button>
         </div>
         
         <div style="margin-bottom: 10px;">
-            <div style="margin-bottom: 5px; font-weight: bold; font-size: 11px;">デバイス選択:</div>
+            <div style="margin-bottom: 5px; font-weight: bold; font-size: 11px;">🎵 VR配信用音声デバイス:</div>
             <select id="audio-device-select" onchange="switchToSelectedDevice()" style="padding: 5px; border-radius: 4px; font-size: 11px; width: 100%; background: #333; color: white; border: 1px solid #555;">
-                <option value="">音声デバイスを選択...</option>
+                <option value="">CABLE Output を検索中...</option>
             </select>
+            <div style="font-size: 9px; opacity: 0.7; margin-top: 3px;">
+                💡 自動検出に失敗した場合は手動で選択してください
+            </div>
         </div>
         
         <div id="status" style="font-size: 10px; opacity: 0.8; padding: 5px; background: rgba(255,255,255,0.1); border-radius: 3px;">

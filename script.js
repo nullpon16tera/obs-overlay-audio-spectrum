@@ -821,7 +821,7 @@ function updateStatus(message) {
 }
 
 function updateButtonStates(activeButton) {
-    const buttons = ['desktop-audio-btn', 'microphone-btn', 'demo-btn'];
+    const buttons = ['microphone-btn', 'demo-btn'];
     buttons.forEach(buttonId => {
         const btn = document.getElementById(buttonId);
         if (btn) {
@@ -836,78 +836,7 @@ function updateButtonStates(activeButton) {
     });
 }
 
-async function switchToDesktopAudio() {
-    if (isRunning) {
-        stopCurrentAudio();
-    }
-    
-    updateStatus('システム音声に接続中...');
-    updateButtonStates('desktop-audio-btn');
-    
-    try {
-        // まず利用可能な音声デバイスを列挙
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        const audioInputs = devices.filter(device => device.kind === 'audioinput');
-        
-        console.log('利用可能な音声入力デバイス:', audioInputs);
-        
-        // ステレオミックスやVoiceMeeterなどの仮想デバイスを探す
-        const virtualDevices = audioInputs.filter(device => 
-            device.label.toLowerCase().includes('stereo mix') ||
-            device.label.toLowerCase().includes('voicemeeter') ||
-            device.label.toLowerCase().includes('virtual') ||
-            device.label.toLowerCase().includes('cable') ||
-            device.label.toLowerCase().includes('mix')
-        );
-        
-        let stream;
-        
-        if (virtualDevices.length > 0) {
-            // 仮想デバイスが見つかった場合
-            console.log('仮想音声デバイスを発見:', virtualDevices[0].label);
-            stream = await navigator.mediaDevices.getUserMedia({
-                audio: {
-                    deviceId: virtualDevices[0].deviceId,
-                    channelCount: config.stereoMode ? 2 : 1,
-                    echoCancellation: false,
-                    noiseSuppression: false,
-                    autoGainControl: false,
-                }
-            });
-            updateStatus(`🔊 ${virtualDevices[0].label} で動作中`);
-        } else {
-            // 仮想デバイスがない場合、画面共有を試行
-            console.log('仮想デバイスが見つからないため、画面共有を試行');
-            stream = await navigator.mediaDevices.getDisplayMedia({
-                video: {
-                    mediaSource: 'screen',
-                    width: { ideal: 1 },
-                    height: { ideal: 1 },
-                    frameRate: { ideal: 1 }
-                },
-                audio: {
-                    channelCount: config.stereoMode ? 2 : 1,
-                    echoCancellation: false,
-                    noiseSuppression: false,
-                    autoGainControl: false,
-                    sampleRate: 48000,
-                }
-            });
-            updateStatus('🖥️ 画面音声で動作中');
-        }
-        
-        connectAudioStream(stream);
-        currentAudioSource = 'desktop';
-    } catch (error) {
-        console.error('システム音声の取得に失敗:', error);
-        updateStatus('❌ システム音声の取得に失敗 - マイクを試行中...');
-        
-        // システム音声が失敗した場合、自動的にマイクにフォールバック
-        setTimeout(() => {
-            switchToMicrophone();
-        }, 1000);
-    }
-}
+// switchToDesktopAudio関数は削除 - CABLE Output専用に変更
 
 async function switchToMicrophone() {
     if (isRunning) {
@@ -1012,28 +941,45 @@ async function populateAudioDevices() {
             select.removeChild(select.lastChild);
         }
         
+        let cableOutputFound = false;
+        let recommendedDeviceId = null;
+        
         audioInputs.forEach(device => {
-            const option = document.createElement('option');
-            option.value = device.deviceId;
-            
             let label = device.label || `音声デバイス ${device.deviceId.slice(0, 8)}`;
             
-            // 仮想デバイスを識別
-            if (label.toLowerCase().includes('stereo mix') ||
-                label.toLowerCase().includes('voicemeeter') ||
-                label.toLowerCase().includes('virtual') ||
-                label.toLowerCase().includes('cable')) {
-                label = `🔊 ${label} (推奨)`;
-            } else if (label.toLowerCase().includes('microphone') ||
-                       label.toLowerCase().includes('マイク')) {
-                label = `🎤 ${label}`;
-            } else {
-                label = `🔉 ${label}`;
+            // CABLE Outputのみを表示
+            if (label.toLowerCase().includes('cable output') ||
+                label.toLowerCase().includes('cable-output')) {
+                const option = document.createElement('option');
+                option.value = device.deviceId;
+                option.textContent = `🎵 ${label}`;
+                select.appendChild(option);
+                
+                cableOutputFound = true;
+                recommendedDeviceId = device.deviceId;
             }
-            
-            option.textContent = label;
-            select.appendChild(option);
         });
+        
+        // CABLE Outputが見つからない場合のメッセージ
+        if (!cableOutputFound) {
+            const option = document.createElement('option');
+            option.value = '';
+            option.textContent = '❌ CABLE Output が見つかりません';
+            option.disabled = true;
+            select.appendChild(option);
+        }
+        
+        // CABLE Outputが見つかった場合の特別メッセージ
+        if (cableOutputFound) {
+            updateStatus('🎵 CABLE Output発見！手動で選択してください');
+            
+            // 推奨デバイスを目立たせる
+            setTimeout(() => {
+                if (settingsVisible || !isRunning) {
+                    updateStatus('💡 音声デバイス選択で「CABLE Output」を選んでね！');
+                }
+            }, 2000);
+        }
         
         console.log(`${audioInputs.length}個の音声入力デバイスを発見`);
     } catch (error) {
@@ -1092,8 +1038,37 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     updateStatus('準備完了 - 音声ソースを選択してください');
     
-    // 自動的にシステム音声を試行
-    switchToDesktopAudio();
+    // CABLE Outputがあるかチェックして、あれば優先的に試行
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const audioInputs = devices.filter(device => device.kind === 'audioinput');
+    const cableOutput = audioInputs.find(device => 
+        device.label.toLowerCase().includes('cable output') ||
+        device.label.toLowerCase().includes('cable-output')
+    );
+    
+    if (cableOutput) {
+        updateStatus('🎵 CABLE Output発見！自動接続を試行中...');
+        
+        // CABLE Outputを自動選択
+        const select = document.getElementById('audio-device-select');
+        if (select) {
+            // セレクトボックスで該当デバイスを選択
+            for (let i = 0; i < select.options.length; i++) {
+                if (select.options[i].value === cableOutput.deviceId) {
+                    select.selectedIndex = i;
+                    break;
+                }
+            }
+            
+            // 自動接続を試行
+            setTimeout(() => {
+                switchToSelectedDevice();
+            }, 500);
+        }
+    } else {
+        // CABLE Outputがない場合は警告を表示
+        updateStatus('⚠️ CABLE Output が見つかりません - VB-CABLEを確認してください');
+    }
     
     // 5秒後に設定パネルを自動で閉じる
     setTimeout(() => {
