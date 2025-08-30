@@ -17,17 +17,33 @@
 
 ## 🔧 設定手順
 
-### ステップ1: VB-CABLEとAudio Monitor プラグインをインストール
+### ステップ1: OBS Studioの起動オプション設定
+
+OBS Studioを以下のオプション付きで起動してください：
+
+```
+--enable-media-stream --use-fake-ui-for-media-stream
+```
+
+**設定方法**:
+1. **ショートカットの場合**: OBSのショートカットを右クリック → プロパティ → リンク先の末尾に上記オプションを追加
+2. **コマンドラインの場合**: `obs64.exe --enable-media-stream --use-fake-ui-for-media-stream`
+
+ショートカットの場合の例：`"C:\Program Files\obs-studio\bin\64bit\obs64.exe" --enable-media-stream --use-fake-ui-for-media-stream`
+
+> **💡 重要**: このオプションがないとブラウザソースでの音声キャプチャが正常に動作しない場合があります。
+
+### ステップ2: VB-CABLEとAudio Monitor プラグインをインストール
 
 [VB-CABLE](https://vb-audio.com/Cable/)  
 [Audio Monitor プラグイン](https://obsproject.com/forum/resources/audio-monitor.1186/)
 
-### ステップ2: OBSでオーディオモニターを設定
+### ステップ3: OBSでオーディオモニターを設定
 1. **音声ソース**（アプリケーション音声キャプチャ等）を右クリック
 2. **フィルタ** → **+** → **Audio Monitor**（オーディオモニター）を追加
 3. **デバイス** → **CABLE Input** を選択
 
-### ステップ3: ビジュアライザーで音声を選択
+### ステップ4: ビジュアライザーで音声を選択
 1. **ブラウザソース**を追加して、ビジュアライザーのindex.htmlファイルを設定する（解像度は環境に合わせて変更してください）
 2. **追加したブラウザソース**を選択して、プレビュー画面下にある対話を押す
 3. **音声デバイスの選択**:
