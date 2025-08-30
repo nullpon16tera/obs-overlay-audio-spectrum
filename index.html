@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Spectrum Visualizer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="canvas" style="background: transparent;"></canvas>
+    
+    <!-- 設定ボタン（常に表示） -->
+    <button id="settings-toggle" onclick="toggleSettings()" style="position: absolute; top: 10px; left: 10px; z-index: 1001; background: rgba(0,0,0,0.7); color: white; border: none; padding: 8px; border-radius: 50%; cursor: pointer; font-size: 16px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" title="音声設定を開く/閉じる">
+        ⚙️
+    </button>
+    
+    <!-- 音声ソース選択UI（開閉可能） -->
+    <div id="audio-controls" style="position: absolute; top: 10px; left: 60px; z-index: 1000; background: rgba(0,0,0,0.9); padding: 15px; border-radius: 8px; color: white; font-family: Arial, sans-serif; font-size: 12px; display: none; min-width: 280px;">
+        <div style="margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+            <strong>🎵 オーディオビジュアライザー設定</strong>
+            <button onclick="toggleSettings()" style="background: none; border: none; color: white; cursor: pointer; font-size: 18px; padding: 0; width: 20px; height: 20px;" title="閉じる">×</button>
+        </div>
+        
+        <div style="margin-bottom: 10px;">
+            <div style="margin-bottom: 5px; font-weight: bold; font-size: 11px;">音声ソース:</div>
+            <button id="desktop-audio-btn" onclick="switchToDesktopAudio()" style="background: #4CAF50; color: white; border: none; padding: 6px 12px; border-radius: 4px; margin-right: 5px; cursor: pointer; font-size: 11px;" title="仮想音声デバイス(VoiceMeeter/ステレオミックス)または画面共有で音声を取得">
+                🔊 システム音声
+            </button>
+            <button id="microphone-btn" onclick="switchToMicrophone()" style="background: #2196F3; color: white; border: none; padding: 6px 12px; border-radius: 4px; margin-right: 5px; cursor: pointer; font-size: 11px;">
+                🎤 マイク
+            </button>
+            <button id="demo-btn" onclick="switchToDemo()" style="background: #FF9800; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 11px;">
+                ✨ デモ
+            </button>
+        </div>
+        
+        <div style="margin-bottom: 10px;">
+            <div style="margin-bottom: 5px; font-weight: bold; font-size: 11px;">デバイス選択:</div>
+            <select id="audio-device-select" onchange="switchToSelectedDevice()" style="padding: 5px; border-radius: 4px; font-size: 11px; width: 100%; background: #333; color: white; border: 1px solid #555;">
+                <option value="">音声デバイスを選択...</option>
+            </select>
+        </div>
+        
+        <div id="status" style="font-size: 10px; opacity: 0.8; padding: 5px; background: rgba(255,255,255,0.1); border-radius: 3px;">
+            初期化中...
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
