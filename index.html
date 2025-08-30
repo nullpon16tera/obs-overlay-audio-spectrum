@@ -32,7 +32,7 @@
         </div>
         
         <div style="margin-bottom: 10px;">
-            <div style="margin-bottom: 5px; font-weight: bold; font-size: 11px;">🎵 VR配信用音声デバイス:</div>
+            <div style="margin-bottom: 5px; font-weight: bold; font-size: 11px;">🎵 音声デバイス:</div>
             <select id="audio-device-select" onchange="switchToSelectedDevice()" style="padding: 5px; border-radius: 4px; font-size: 11px; width: 100%; background: #333; color: white; border: 1px solid #555;">
                 <option value="">CABLE Output を検索中...</option>
             </select>
@@ -46,6 +46,11 @@
         </div>
     </div>
     
+    <!-- ビジュアライザー本体 -->
+    <script src="visualizer.js"></script>
+    <!-- OBS接続用オーディオマネージャー -->
+    <script src="audio-manager.js"></script>
+    <!-- メイン初期化スクリプト -->
     <script src="script.js"></script>
 </body>
 </html>
