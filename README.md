@@ -37,7 +37,6 @@ OBS Studioを以下のオプション付きで起動してください：
 
 - <a href="https://vb-audio.com/Cable/" target="_blank" rel="noopener noreferrer">VB-CABLE</a>
 - <a href="https://obsproject.com/forum/resources/audio-monitor.1186/" target="_blank" rel="noopener noreferrer">Audio Monitor プラグイン</a>
-- <a href="https://www.google.com" target="_blank" rel="noopener noreferrer">Googleへのテストリンク</a>
 
 ### ステップ3: OBSでオーディオモニターを設定
 1. **音声ソース**（アプリケーション音声キャプチャ等）を右クリック
